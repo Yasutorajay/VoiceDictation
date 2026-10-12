@@ -182,7 +182,7 @@ class TrayApp:
             pystray.MenuItem("暂停听写" if not self._paused else "继续听写", lambda: self._on_toggle_pause()),
             pystray.Menu.SEPARATOR,
             pystray.MenuItem("日志目录", lambda: self._on_open_logs() if self._on_open_logs else None, enabled=lambda _item: self._on_open_logs is not None),
-            pystray.MenuItem("关于 RanLiAiJay", lambda: self._on_open_about() if self._on_open_about else None, enabled=lambda _item: self._on_open_about is not None),
+            pystray.MenuItem("关于 RanLiAiJAY", lambda: self._on_open_about() if self._on_open_about else None, enabled=lambda _item: self._on_open_about is not None),
             pystray.Menu.SEPARATOR,
             pystray.MenuItem("退出", lambda: self._request_quit()),
         ]

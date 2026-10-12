@@ -2,8 +2,8 @@
 
 本仓库自有代码改为 **GNU GPL-3.0** 开源许可，完整文本见根目录 `LICENSE`。
 
-版权所有：RanLiAiJay（2026）  
-品牌署名：RanLiAiJay / 燃锂AiJay
+版权所有：RanLiAiJAY（2026）  
+品牌署名：RanLiAiJAY / 燃砺AiJAY
 
 第三方组件、模型与词库仍按其原许可证执行，详见 `THIRD_PARTY_NOTICES.txt`。
 

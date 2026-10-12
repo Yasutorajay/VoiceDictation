@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 WINDOW_GEOMETRY = "620x435"
 WINDOW_MIN_SIZE = (620, 435)
-SUPPORT_TEXT = "燃力AiJay 提供技术支持"
+SUPPORT_TEXT = "燃砺AiJAY 提供技术支持"
 PIN_BUTTON_OFF_TEXT = "📌 置顶"
 PIN_BUTTON_ON_TEXT = "📌 已置顶"
 PIN_STATUS_ON = "已置顶：窗口将保持在其他窗口之上"

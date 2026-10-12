@@ -142,7 +142,7 @@ def test_bridge_replaces_pipeline_worker_cached_inject(monkeypatch):
 def test_window_uses_measured_size_and_branding():
     assert WINDOW_GEOMETRY == "620x435"
     assert WINDOW_MIN_SIZE == (620, 435)
-    assert SUPPORT_TEXT == "燃力AiJay 提供技术支持"
+    assert SUPPORT_TEXT == "燃砺AiJAY 提供技术支持"
 
 
 def test_set_text_updates_without_forcing_window_visible():

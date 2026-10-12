@@ -110,7 +110,7 @@ class StatusOverlay:
             points.extend((x, y))
         c.create_line(*points, fill="#63d5ff", width=3, smooth=True)
         c.create_text(32, 124, text=self._text[-58:] if self._text else "等待语音输入…", anchor="w", fill="#eaf9ff", font=("Microsoft YaHei UI", 12))
-        c.create_text(self.CARD_W - 28, 124, text="燃力AI JAY提供技术支持", anchor="e", fill="#79cfff", font=("Microsoft YaHei UI", 9))
+        c.create_text(self.CARD_W - 28, 124, text="燃砺AiJAY 提供技术支持", anchor="e", fill="#79cfff", font=("Microsoft YaHei UI", 9))
 
     def _mode_label(self) -> str:
         return {"recording": "录音中", "processing": "识别中", "done": "完成", "error": "出错", "cancelled": "已取消"}.get(self._mode, "就绪")

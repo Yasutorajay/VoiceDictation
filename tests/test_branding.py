@@ -17,9 +17,9 @@ from app.config import load_config  # noqa: E402
 
 
 def test_brand_identity_is_fixed() -> None:
-    assert BRAND_NAME == "RanLiAiJay"
+    assert BRAND_NAME == "RanLiAiJAY"
     assert APP_VERSION == "2.0"
-    assert attribution_text() == "燃力AiJay 提供技术支持"
+    assert attribution_text() == "燃砺AiJAY 提供技术支持"
 
 
 def test_official_download_points_to_wechat_account() -> None:
@@ -30,7 +30,7 @@ def test_official_download_points_to_wechat_account() -> None:
 def test_startup_sound_is_enabled_by_default(tmp_path: Path) -> None:
     cfg = load_config(tmp_path / "missing-user-config.yaml")
     assert cfg["branding"]["startup_sound"] is True
-    assert cfg["branding"]["attribution"] == "燃力AiJay 提供技术支持"
+    assert cfg["branding"]["attribution"] == "燃砺AiJAY 提供技术支持"
 
 
 def test_rights_notice_names_third_party_license_boundary() -> None:

@@ -9,8 +9,8 @@
 AppId={{7F4B1655-C78D-49C7-9EAB-26063FB9A2A0}
 AppName=VoiceDictation
 AppVersion={#AppVersion}
-AppPublisher=RanLiAiJay
-VersionInfoCompany=RanLiAiJay
+AppPublisher=RanLiAiJAY
+VersionInfoCompany=RanLiAiJAY
 VersionInfoDescription=VoiceDictation 本地离线语音听写安装程序
 VersionInfoProductName=VoiceDictation
 VersionInfoProductVersion={#AppVersion}
@@ -40,7 +40,7 @@ Name: "{autoprograms}\VoiceDictation"; Filename: "{app}\VoiceDictation.exe"; Wor
 Name: "{autodesktop}\VoiceDictation"; Filename: "{app}\VoiceDictation.exe"; WorkingDir: "{app}"; Tasks: desktopicon
 
 [Registry]
-Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueName: "VoiceDictationRanLiAiJay"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueName: "VoiceDictationRanLiAiJAY"; Flags: uninsdeletevalue
 
 [Run]
 Filename: "{app}\VoiceDictation.exe"; Description: "启动 VoiceDictation"; Flags: nowait postinstall skipifsilent

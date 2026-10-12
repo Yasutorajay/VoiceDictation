@@ -14,11 +14,11 @@ VSVersionInfo(
       StringTable(
         '080404B0',
         [
-          StringStruct('CompanyName', 'RanLiAiJay'),
+          StringStruct('CompanyName', 'RanLiAiJAY'),
           StringStruct('FileDescription', 'VoiceDictation 本地离线语音听写'),
           StringStruct('FileVersion', '2.0.0.0'),
           StringStruct('InternalName', 'VoiceDictation'),
-          StringStruct('LegalCopyright', 'Copyright RanLiAiJay. All rights reserved.'),
+          StringStruct('LegalCopyright', 'Copyright (C) 2026 RanLiAiJAY'),
           StringStruct('OriginalFilename', 'VoiceDictation.exe'),
           StringStruct('ProductName', 'VoiceDictation'),
           StringStruct('ProductVersion', '2.0.0.0')

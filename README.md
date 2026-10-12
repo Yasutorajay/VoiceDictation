@@ -2,7 +2,7 @@
 
 [![License: GPL-3.0](https://img.shields.io/badge/License-GPL%203.0-blue.svg)](LICENSE)
 
-**VoiceDictation** is a Windows 10/11 (64-bit) offline voice dictation tool by **RanLiAiJay** (brand: 燃锂AiJay).  
+**VoiceDictation** is a Windows 10/11 (64-bit) offline voice dictation tool by **RanLiAiJAY** (brand: 燃砺AiJAY).  
 Speech recognition, punctuation, and terminology run locally — no audio upload required.
 
 ## License
@@ -68,11 +68,11 @@ Bug reports and GPL-compatible patches welcome — especially help finishing sou
 
 ## 中文
 
-VoiceDictation 是 **RanLiAiJay**（燃锂AiJay）做的 Windows 本地语音听写工具：识别、标点、术语都在本机完成。
+VoiceDictation 是 **RanLiAiJAY**（燃砺AiJAY）做的 Windows 本地语音听写工具：识别、标点、术语都在本机完成。
 
 - **许可证**：自有代码 **GPL-3.0**（见 `LICENSE`）；第三方见 `THIRD_PARTY_NOTICES.txt`
 - **源码完整度**：大部分模块已开源为 `.py`；`application` / `audio.capture` / `hotkey.listener` 三处仍缺完整源码，见 `recovery/SOURCE_STATUS.md`
 - **便携包 / 安装包**：体积大（含模型），放在 GitHub Release，不进 git
 - **从源码运行**：Python 3.12 + `pip install -r requirements.txt`，模型放到 `data\models`，再 `python main.py`
 
-官方品牌与支持：RanLiAiJay / 燃锂AiJay。
+官方品牌与支持：RanLiAiJAY / 燃砺AiJAY。

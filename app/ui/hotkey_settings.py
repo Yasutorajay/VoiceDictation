@@ -31,7 +31,7 @@ from app.hotkey.keys import (
 
 logger = logging.getLogger(__name__)
 RUN_KEY = r"Software\Microsoft\Windows\CurrentVersion\Run"
-RUN_VALUE = "VoiceDictationRanLiAiJay"
+RUN_VALUE = "VoiceDictationRanLiAiJAY"
 RETENTION_OPTIONS = {"1 天": 1, "3 天": 3, "7 天（推荐）": 7, "30 天": 30, "永不自动删除": None}
 PERFORMANCE_OPTIONS = {
     "极速模式（模型全部常驻）": "speed",
@@ -159,7 +159,7 @@ class HotkeySettingsWindow:
     def _run(self) -> None:
         root = tk.Tk()
         self._root = root
-        root.title("语音听写设置 · RanLiAiJay")
+        root.title("语音听写设置 · RanLiAiJAY")
         root.geometry("640x750")
         root.resizable(False, False)
         root.protocol("WM_DELETE_WINDOW", self._close)
@@ -233,7 +233,7 @@ class HotkeySettingsWindow:
         ttk.Button(buttons, text="取消", command=self._close).pack(side="right")
         self._save_button = ttk.Button(buttons, text="保存并立即生效", command=self._save)
         self._save_button.pack(side="right", padx=(0, 10))
-        ttk.Label(frame, text="燃砺AiJay 提供技术支持 · 微信公众号：燃砺Ai百宝库", foreground="#777", font=("Microsoft YaHei UI", 9)).pack(side="bottom", pady=(18, 0))
+        ttk.Label(frame, text="燃砺AiJAY 提供技术支持 · 微信公众号：燃砺Ai百宝库", foreground="#777", font=("Microsoft YaHei UI", 9)).pack(side="bottom", pady=(18, 0))
         root.mainloop()
 
     def _add_key_row(self, parent: ttk.Frame, title: str, variable: tk.StringVar, labels: list[str], slot: str) -> None:

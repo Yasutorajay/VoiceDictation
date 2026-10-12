@@ -34,7 +34,7 @@ class ModePanel:
         box = ttk.Combobox(frame, textvariable=selected, values=MODES, state="readonly", width=15)
         box.pack(fill="x", padx=8, pady=(1, 3))
         box.bind("<<ComboboxSelected>>", lambda _e: self._on_mode(selected.get()))
-        tk.Label(frame, text="Ctrl+F10 显示/隐藏 · 燃力AiJay", bg="#08111f", fg="#7291a8", font=("Microsoft YaHei UI", 8)).pack(anchor="w", padx=8)
+        tk.Label(frame, text="Ctrl+F10 显示/隐藏 · 燃砺AiJAY", bg="#08111f", fg="#7291a8", font=("Microsoft YaHei UI", 8)).pack(anchor="w", padx=8)
         root.mainloop()
 
     def show(self) -> None:
