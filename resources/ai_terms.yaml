@@ -1,0 +1,36 @@
+version: 1
+terms:
+  - {canonical: GPT Image 2, aliases: [gpt image 2, gpt image two, gpt 一米几二]}
+  - {canonical: 菌子, aliases: [君子]}
+  - {canonical: 双击 F10, aliases: [双 G F 十, 双击 g f 十, 双击 f10, 双击 f 10]}
+  - {canonical: Claude Code, aliases: [cloud code, claud code]}
+  - {canonical: Codex, aliases: [code x, code ex, co dex]}
+  - {canonical: GitHub Copilot, aliases: [github co pilot, git hub copilot]}
+  - {canonical: OpenAI, aliases: [open ai]}
+  - {canonical: Anthropic, aliases: [an thropic]}
+  - {canonical: ChatGPT, aliases: [chat gpt]}
+  - {canonical: GPT-5.6, aliases: [gpt 5.6, gpt5.6, gpt 五点六]}
+  - {canonical: GPT-5, aliases: [gpt 5, gpt five]}
+  - {canonical: GPT-4o, aliases: [gpt 4o, gpt four o]}
+  - {canonical: MCP, aliases: [m c p, model context protocol]}
+  - {canonical: Kimi, aliases: [kimi]}
+  - {canonical: 豆包, aliases: [doubao, dou bao]}
+  - {canonical: Manus, aliases: [manus, man us]}
+  - {canonical: Perplexity, aliases: [perplexity ai, per plexity]}
+  - {canonical: Sora, aliases: [sora ai]}
+  - {canonical: Midjourney, aliases: [mid journey]}
+  - {canonical: Seedance, aliases: [see dance, seed dance]}
+  - {canonical: F10, aliases: [f10, f 10]}
+  - {canonical: 双击 F10, aliases: [双击 f10, 双击 f 10]}
+  - {canonical: Token, aliases: [token, tokens, tokenization, tokenizer, 托肯, 令牌]}
+  - {canonical: API, aliases: [api, a p i, application programming interface]}
+  - {canonical: SDK, aliases: [sdk, s d k, software development kit]}
+  - {canonical: GitHub, aliases: [github, git hub]}
+  - {canonical: Python, aliases: [python, pie thon, py thon]}
+  - {canonical: JavaScript, aliases: [javascript, java script]}
+  - {canonical: TypeScript, aliases: [typescript, type script]}
+  - {canonical: Windows, aliases: [windows, window's]}
+  - {canonical: microphone, aliases: [microphone, micro phone, mic]}
+  - {canonical: dictation, aliases: [dictation, dictation mode]}
+  - {canonical: voice input, aliases: [voice input, voice typing, speech input]}
+  - {canonical: DeepSeek, aliases: [deep seek]}

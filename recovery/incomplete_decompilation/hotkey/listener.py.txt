@@ -1,0 +1,125 @@
+# Source Generated with Decompyle++
+# File: listener.pyc (Python 3.12)
+
+from __future__ import annotations
+import logging
+import threading
+from typing import Callable
+from app.hotkey.keys import NEVER_BLOCK_KEYS, is_mouse_token, normalize_key
+logger = logging.getLogger(__name__)
+
+class HotkeyListener:
+    '''Global keyboard + mouse listener for chord hotkeys.
+
+    Keyboard via `keyboard` package (observe only — never block_key).
+    Mouse buttons / horizontal wheel via Win32 WH_MOUSE_LL.
+
+    Critical safety rules:
+    - NEVER call keyboard.block_key / suppress=True for modifiers or Enter.
+      Those permanently break input when the process dies mid-block.
+    - Mouse events used as hotkeys ARE suppressed (return 1) so middle-click
+      does not enter auto-scroll mode in the focused app.
+    '''
+    
+    def __init__(self = None, on_event = None, *, secondary_key, primary_key):
+        self._on_event = on_event
+        self._primary_key = normalize_key(primary_key)
+        self._secondary_key = normalize_key(secondary_key)
+        self._kb_hook = None
+        self._started = False
+        self._lock = threading.Lock()
+        self._mouse_hook = None
+        self._mouse_thread = None
+        self._mouse_stop = threading.Event()
+        self._need_mouse = False
+        self._mouse_proc = None
+
+    
+    def set_bindings(self = None, primary = None, secondary = None):
+        primary_n = normalize_key(primary)
+        secondary_n = normalize_key(secondary)
+        if not is_mouse_token(primary_n):
+            is_mouse_token(primary_n)
+        need_mouse = is_mouse_token(secondary_n)
+        self._lock
+        self._primary_key = primary_n
+        self._secondary_key = secondary_n
+        if not self._started:
+            self._need_mouse = need_mouse
+            None(None, None)
+            return None
+    # WARNING: Decompyle incomplete
+
+    
+    def start(self = None):
+        pass
+    # WARNING: Decompyle incomplete
+
+    
+    def _start_mouse_hook(self = None):
+        if self._mouse_thread and self._mouse_thread.is_alive():
+            return None
+        self._mouse_stop.clear()
+        self._mouse_thread = threading.Thread(target = self._mouse_loop, name = 'mouse-hook', daemon = True)
+        self._mouse_thread.start()
+        logger.info('Mouse hook started')
+
+    
+    def _stop_mouse_hook(self = None):
+        self._mouse_stop.set()
+        
+        try:
+            import ctypes
+            if self._mouse_thread and self._mouse_thread.native_id:
+                ctypes.WinDLL('user32').PostThreadMessageW(self._mouse_thread.native_id, 18, 0, 0)
+            if self._mouse_thread and self._mouse_thread.is_alive():
+                self._mouse_thread.join(timeout = 1.5)
+            if self._mouse_thread and self._mouse_thread.is_alive():
+                logger.error('Mouse hook thread did not stop in time')
+                return None
+            self._mouse_thread = None
+            self._mouse_proc = None
+            logger.info('Mouse hook stopped')
+            return None
+        except Exception:
+            continue
+
+
+    
+    def _should_suppress_mouse(self = None, token = None, is_down = None, fsm_wants = ('token', 'str', 'is_down', 'bool', 'fsm_wants', 'bool', 'return', 'bool')):
+        '''Suppress middle/side buttons when they are part of the active chord.'''
+        tok = normalize_key(token)
+        if tok not in (self._primary_key, self._secondary_key):
+            return False
+        return bool(fsm_wants)
+
+    
+    def _mouse_loop(self = None):
+        pass
+    # WARNING: Decompyle incomplete
+
+    
+    def stop(self = None):
+        import keyboard
+        self._lock
+        if not self._started:
+            None(None, None)
+            return None
+        self._force_unblock_all()
+    # WARNING: Decompyle incomplete
+
+    _force_unblock_all = (lambda : try:
+import keyboardfor name in list(NEVER_BLOCK_KEYS) + [
+'b',
+'a',
+'z',
+'f1',
+'f2',
+'f3',
+'f4']:
+keyboard.unblock_key(name)try:
+keyboard.unhook_all()Noneexcept Exception:
+Noneexcept Exception:
+continueexcept Exception:
+None)()
+

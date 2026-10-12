@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.testdeps/
+.venv/
+venv/
+.env
+.env.*
+
+# Build / release artifacts
+build/
+dist/
+installer_source*/
+*.egg-info/
+*.spec.bak
+
+# Large / local-only
+*.log
+*.wav
+*.mp3
+*.sqlite*
+*.db
+*.zip
+*.7z
+*.rar
+*.exe
+innosetup*.exe
+
+# Local config & runtime data
+config.yaml
+data/logs/
+data/recordings/
+data/captures/
+data/terminology.yaml
+data/models/**/*.onnx
+data/models/**/*.ort
+data/models/**/tokens.json
+data/models/**/*.bin
+model_archive/
+model-download/
+recovery_artifacts/
+runtime-tk-investigation/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Keep recovery bytecode snapshots tracked
+!recovery/bytecode/*.pyc

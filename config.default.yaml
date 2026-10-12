@@ -1,0 +1,107 @@
+hotkey:
+  # Hold primary, then press secondary to record.
+  # Default: Right Alt (hold) + Mouse Middle (click)
+  # Pulse secondaries (mouse3 / wheel_left / wheel_right): release primary to stop,
+  #   or click secondary again to toggle stop. Do NOT end on secondary release.
+  # Hold secondaries (mouse4/5, keys): release either key ends recording.
+  primary: right alt
+  secondary: mouse3
+  min_hold_ms: 250
+  max_hold_ms: 60000
+  cooldown_ms: 150
+  enabled: true
+
+audio:
+  sample_rate: 16000
+  channels: 1
+  # null = system default input device
+  device: null
+  silence_rms: 0.008
+  pad_ms: 120
+
+performance:
+  # speed = all models ready; balanced = main model ready; low_memory = load on first use in a child process.
+  mode: balanced
+  idle_unload_minutes: 10
+  # Rule punctuation avoids loading the separate punctuation model in low-memory mode.
+  low_memory_model_punctuation: false
+
+recording:
+  # Audio and recognized text persistence are permanently disabled for privacy.
+  save_last_capture: false
+  save_last_result: false
+
+asr:
+  provider: cpu
+  num_threads: 4
+  # Automatically recognize Mandarin, English, Cantonese, Japanese, and Korean.
+  language: auto
+  use_itn: true
+  model_dir: sense-voice-int8
+  model_file: model.int8.onnx
+  tokens_file: tokens.txt
+
+punctuation:
+  enabled: true
+  model_dir: punct-ct-transformer-int8
+  model_file: ""
+
+vad:
+  enabled: true
+  model_file: silero_vad.onnx
+
+postprocess:
+  remove_fillers: true
+  polish_punctuation: true
+  mode: "真实表达"
+  preserve_intent: true
+  bilingual_spacing: true
+  language_rule: mixed
+  summary_provider: "disabled"
+
+terminology:
+  enabled: true
+  builtin_file: resources/ai_terms.yaml
+  user_file: terminology.yaml
+
+inject:
+  pre_paste_delay_ms: 80
+  post_paste_delay_ms: 120
+  paste_shortcut: ctrl_v
+  focus_settle_ms: 100
+  restore_clipboard: true
+  escape_ime: false
+  method: auto
+  keep_on_failure: true
+
+ui:
+  show_overlay: true
+  overlay_text_recording: "录音中…"
+  overlay_text_processing: "识别中…"
+  overlay_text_done: "完成"
+  overlay_text_error: "出错"
+  overlay_text_cancelled: "已取消"
+
+live_preview:
+  # Preview and final decoding share one locked recognizer to protect sherpa-onnx state.
+  # Preview is enabled by default; low-memory mode disables it. Preview runs only
+  # on new audio and processes at most the last 6 seconds for bounded CPU cost.
+  enabled: true
+  interval_ms: 450
+  min_audio_ms: 250
+  max_audio_ms: 6000
+
+paths:
+  data_dir: null
+  models_subdir: models
+  log_subdir: logs
+
+logging:
+  level: INFO
+  retention_days: 7
+  # Transcript text is never written to app.log.
+  include_transcript_text: false
+
+branding:
+  startup_sound: true
+  attribution: "燃力AiJay 提供技术支持"

@@ -1,0 +1,29 @@
+version: 1
+catalog:
+  - id: professional_top10
+    name: 常用AI与开发术语（10项）
+    url: builtin://professional_top10
+    license: 自有整理
+    redistribution: allowed
+    removable: false
+  - id: china_regions_cldr
+    name: 国际国家和地区名称
+    url: https://github.com/unicode-org/cldr-json
+    license: Unicode-DFS-2016
+    redistribution: allowed_with_notice
+    removable: true
+    source_note: Unicode CLDR 官方数据，下载前应保存 LICENSE 文件
+  - id: world_regions_wikidata
+    name: 世界地名补充
+    url: https://www.wikidata.org/wiki/Wikidata:Licensing
+    license: CC0
+    redistribution: allowed
+    removable: true
+    source_note: 仅使用 CC0 数据；不抓取百科正文
+  - id: fooddata_central
+    name: 国际食材补充
+    url: https://fdc.nal.usda.gov/
+    license: US Government Open Data
+    redistribution: verify_current_terms
+    removable: true
+    source_note: USDA FoodData Central；仅下载名称和分类字段

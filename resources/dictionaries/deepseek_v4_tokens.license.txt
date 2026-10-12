@@ -1,0 +1,3 @@
+MIT（仓库 pyproject.toml 声明）
+来源：https://github.com/AndersonBY/deepseek-tokenizer
+版本：525044c24386953b542ef5262d0c69d309a5d67f

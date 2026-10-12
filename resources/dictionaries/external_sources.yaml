@@ -1,0 +1,27 @@
+version: 1
+sources:
+  - id: meta_dictionary
+    name: meta-dictionary / english-words
+    url: https://github.com/zmuhls/meta-dictionary
+    status: link_only
+    reason: 仓库使用 Unlicense，但 README 明确表示原始词表版权仍属于上游，未确认前不随商业包再分发。
+  - id: rime_ice
+    name: rime-ice 英文词库
+    url: https://github.com/jinzaizhichi/rime-ice
+    status: bundled_resource
+    license: GPL-3.0-only
+  - id: chinese_internet_jargon
+    name: chinese-internet-jargon
+    url: https://github.com/mcsrainbow/chinese-internet-jargon
+    status: link_only
+    reason: 仓库未提供 LICENSE 或其他明确再分发授权。
+  - id: jargons_dev
+    name: jargons.dev 技术术语
+    url: https://github.com/jargonsdev/jargons.dev
+    status: bundled_resource
+    license: GPL-2.0-only
+  - id: deepseek_tokenizer
+    name: DeepSeek V4 Token 词表
+    url: https://github.com/AndersonBY/deepseek-tokenizer
+    status: bundled_resource
+    license: MIT（仓库 pyproject.toml 声明）

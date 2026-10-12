@@ -1,0 +1,41 @@
+VoiceDictation third-party notices
+===================================
+
+First-party project code in this repository is licensed under GNU GPL-3.0
+(see LICENSE). The notices below cover bundled/used third-party components
+and do not change those upstream licenses.
+
+Direct project dependencies include:
+
+- sherpa-onnx: Apache License 2.0
+- numpy: BSD-3-Clause
+- scipy: BSD-3-Clause
+- sounddevice: MIT
+- pyperclip: BSD-3-Clause
+- keyboard: MIT
+- pystray: LGPL-3.0-or-later
+- Pillow: HPND/PIL Software License
+- PyYAML: MIT
+- pywin32: PSF-based license
+
+Bundled dictionaries:
+
+- Princeton WordNet 3.0: WordNet License. Copyright Princeton University.
+  Commercial use, copying, modification and distribution are permitted when
+  the complete copyright notice, license terms and disclaimer remain with all
+  copies and modifications. Princeton's name must not be used in advertising.
+  Source: https://wordnet.princeton.edu/
+- THUOCL: MIT License. Copyright (c) 2018 THUNLP. This distribution converts
+  the official tab-separated category files into VoiceDictation JSON without
+  changing the words or frequencies. The copyright and MIT text are retained.
+  Source: https://github.com/thunlp/THUOCL
+
+The bundled SenseVoiceSmall INT8 weights are converted from the official
+FunAudioLLM/iic SenseVoiceSmall release and are distributed under Apache-2.0;
+the exact release and SHA256 values are retained in MODEL_PROVENANCE.md.
+The punctuation model is a separate artifact. Before redistribution,
+review the FunASR Model Open Source License and the license/NOTICE files shipped by
+each model provider. Do not remove or replace those notices.
+
+This file is a distribution checklist, not legal advice. Verify every transitive
+dependency and model license for the intended commercial territory and pricing.

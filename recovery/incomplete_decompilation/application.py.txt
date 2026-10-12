@@ -1,0 +1,361 @@
+# Source Generated with Decompyle++
+# File: application.pyc (Python 3.12)
+
+from __future__ import annotations
+import logging
+import os
+import subprocess
+import threading
+import time
+from pathlib import Path
+from typing import Any
+from app.audio.capture import AudioCapture
+from app.config import app_root, load_config, logs_dir, save_user_config_patch, update_runtime_config
+from app.hotkey.fsm import HotkeyConfig, HotkeyFSM
+from app.hotkey.capture import OneShotHotkeyCapture
+from app.hotkey.keys import format_chord, normalize_key, validate_hotkey_pair
+from app.hotkey.listener import HotkeyListener
+from app.logging_setup import setup_logging
+from app.ui.hotkey_settings import HotkeySettingsWindow
+from app.ui.about import AboutWindow
+from app.ui.overlay import StatusOverlay
+from app.ui.startup_sound import play_startup_sound
+from app.ui.tray import TrayApp
+from app.worker.pipeline_worker import PipelineWorker
+logger = logging.getLogger(__name__)
+
+class Application:
+    
+    def __init__(self = None, cfg = None):
+        if not cfg:
+            cfg
+        self.cfg = load_config()
+        setup_logging(self.cfg.get('logging', { }).get('level', 'INFO'), logs_dir(self.cfg))
+        self._stop_event = threading.Event()
+        self._paused = False
+        self._capture = AudioCapture(sample_rate = int(self.cfg['audio']['sample_rate']), channels = int(self.cfg['audio']['channels']), device = self.cfg['audio'].get('device'))
+        self._overlay = StatusOverlay()
+        self._worker = None
+        self._fsm = None
+        self._listener = None
+        self._tray = None
+        self._hotkey_settings = None
+        self._about_window = None
+        self._single_instance_handle = None
+        self._asr_lock = threading.Lock()
+        self._level_timer = None
+        self._level_pump = False
+
+    
+    def _acquire_single_instance(self = None):
+        if os.name != 'nt':
+            return True
+        import ctypes
+        kernel32 = ctypes.WinDLL('kernel32', use_last_error = True)
+        kernel32.SetLastError(0)
+        kernel32.CreateMutexW.argtypes = [
+            ctypes.c_void_p,
+            ctypes.c_bool,
+            ctypes.c_wchar_p]
+        kernel32.CreateMutexW.restype = ctypes.c_void_p
+        kernel32.SetLastError(0)
+        handle = kernel32.CreateMutexW(None, False, 'Local\\VoiceDictationSingleton')
+        last_error = ctypes.get_last_error()
+        self._single_instance_handle = handle
+        if handle and last_error == 183:
+            kernel32.CloseHandle.argtypes = [
+                ctypes.c_void_p]
+            kernel32.CloseHandle.restype = ctypes.c_bool
+            kernel32.CloseHandle(handle)
+            self._single_instance_handle = None
+            logger.error('Another instance is already running. Close the tray icon first.')
+            return False
+        if not handle:
+            logger.error('CreateMutex failed, error=%s', last_error)
+            return False
+        return True
+
+    
+    def run(self = None):
+        pass
+    # WARNING: Decompyle incomplete
+
+    
+    def stop(self = None):
+        self._stop_event.set()
+
+    
+    def toggle_pause(self = None):
+        self._paused = not (self._paused)
+        if self._fsm:
+            self._fsm.set_paused(self._paused)
+        if self._tray:
+            self._tray.set_paused(self._paused)
+        if self._paused:
+            if self._worker:
+                self._worker.stop_live_preview()
+            self._stop_level_pump()
+            self._overlay.show('热键已暂停', mode = 'error')
+            return None
+        self._overlay.hide()
+
+    
+    def open_logs(self = None):
+        path = logs_dir(self.cfg)
+        path.mkdir(parents = True, exist_ok = True)
+        
+        try:
+            os.startfile(str(path))
+            return None
+        except Exception:
+            system_root = Path(os.environ.get('SystemRoot', 'C:\\\\Windows'))
+            subprocess.Popen([
+                str(system_root / 'explorer.exe'),
+                str(path)])
+            return None
+
+
+    
+    def open_about(self = None):
+        pass
+    # WARNING: Decompyle incomplete
+
+    
+    def open_hotkey_settings(self = None):
+        pass
+    # WARNING: Decompyle incomplete
+
+    
+    def apply_hotkey(self = None, primary = None, secondary = None):
+        p = normalize_key(primary)
+        s = normalize_key(secondary)
+        error = validate_hotkey_pair(p, s)
+        if error:
+            raise ValueError(error)
+        patch = {
+            'hotkey': {
+                'primary': p,
+                'secondary': s } }
+        save_user_config_patch(patch, self.cfg)
+        update_runtime_config(self.cfg, patch)
+        cfg = HotkeyConfig(primary = p, secondary = s, min_hold_ms = int(self.cfg['hotkey'].get('min_hold_ms', 250)), cooldown_ms = int(self.cfg['hotkey'].get('cooldown_ms', 150)), enabled = bool(self.cfg['hotkey'].get('enabled', True)))
+        if self._fsm:
+            self._fsm.update_config(cfg)
+        if self._listener:
+            self._listener.set_bindings(p, s)
+        if self._tray:
+            self._tray.set_chord_label(p, s)
+            self._tray.set_state('idle' if not self._paused else 'paused')
+        logger.info('Hotkey updated to %s', format_chord(p, s))
+
+    
+    def _on_record_start(self = None):
+        logger.info('Recording start')
+        if self._tray:
+            self._tray.set_state('recording')
+        if self.cfg.get('ui', { }).get('show_overlay', True):
+            self._overlay.show(self.cfg['ui'].get('overlay_text_recording', 'Listening…'), mode = 'recording')
+        
+        try:
+            self._capture.start()
+            self._start_level_pump()
+            if self._worker:
+                self._worker.start_live_preview(self._capture.snapshot)
+                return None
+            return None
+        except Exception:
+            logger.exception('failed to start capture')
+            self._overlay.show('麦克风打开失败', mode = 'error')
+            return None
+
+
+    
+    def _on_record_stop(self = None, duration_ms = None):
+        logger.info('Recording stop (%d ms)', duration_ms)
+        self._stop_level_pump()
+        if self._worker:
+            self._worker.stop_live_preview()
+        audio = self._capture.stop()
+    # WARNING: Decompyle incomplete
+
+    
+    def _on_record_cancel(self = None):
+        logger.info('Recording cancelled')
+        self._stop_level_pump()
+        if self._worker:
+            self._worker.cancel()
+        if self._capture.is_recording:
+            self._capture.cancel()
+        if self.cfg.get('ui', { }).get('show_overlay', True):
+            self._overlay.show(self.cfg['ui'].get('overlay_text_cancelled', 'Cancelled'), mode = 'error')
+            threading.Timer(0.8, self._overlay.hide).start()
+        if self._tray:
+            self._tray.set_state('idle')
+            return None
+
+    
+    def _start_level_pump(self = None):
+        self._level_pump = True
+        self._pump_levels()
+
+    
+    def _stop_level_pump(self = None):
+        self._level_pump = False
+    # WARNING: Decompyle incomplete
+
+    
+    def _pump_levels(self = None):
+        if not self._level_pump:
+            return None
+        
+        try:
+            if self.cfg.get('ui', { }).get('show_overlay', True):
+                self._overlay.set_levels(self._capture.levels())
+            self._level_timer = threading.Timer(0.04, self._pump_levels)
+            self._level_timer.daemon = True
+            self._level_timer.start()
+            return None
+        except Exception:
+            logger.debug('level pump failed', exc_info = True)
+            continue
+
+
+    
+    def _on_partial(self = None, text = None):
+        '''Live or final text for overlay while speaking / before paste.'''
+        if not text:
+            return None
+        if self.cfg.get('ui', { }).get('show_overlay', True):
+            self._overlay.show_partial(text)
+            return None
+
+    
+    def _on_status(self = None, status = None):
+        ui = self.cfg.get('ui', { })
+        mapping = {
+            'processing': ui.get('overlay_text_processing', 'Transcribing…'),
+            'done': ui.get('overlay_text_done', 'Done'),
+            'cancelled': ui.get('overlay_text_cancelled', 'Cancelled'),
+            'idle': None,
+            'error': ui.get('overlay_text_error', 'Error') }
+        text = mapping.get(status)
+        if status == 'done':
+            if ui.get('show_overlay', True) and text:
+                self._overlay.show(text, mode = 'done')
+            if self._tray:
+                self._tray.set_state('idle')
+            threading.Timer(0.9, self._overlay.hide).start()
+            return None
+        if status in ('idle', 'cancelled'):
+            if text and ui.get('show_overlay', True):
+                self._overlay.show(text, mode = 'error' if status == 'cancelled' else 'idle')
+                threading.Timer(0.7, self._overlay.hide).start()
+            else:
+                self._overlay.hide()
+            if self._tray:
+                self._tray.set_state('idle')
+                return None
+            return None
+        if status == 'processing':
+            if self._tray:
+                self._tray.set_state('processing')
+            if text:
+                if ui.get('show_overlay', True):
+                    self._overlay.show(text, mode = 'processing')
+                    return None
+                return None
+            return None
+        if status == 'error':
+            if self._tray:
+                self._tray.set_state('error')
+            if text:
+                if ui.get('show_overlay', True):
+                    self._overlay.show(text, mode = 'error')
+                    threading.Timer(1.5, self._overlay.hide).start()
+                    return None
+                return None
+            return None
+
+    
+    def _on_busy(self = None, busy = None):
+        if self._fsm:
+            self._fsm.set_busy(busy)
+            return None
+
+    
+    def _on_result(self = None, text = None):
+        logger.info('Result: %s', text)
+
+    
+    def _on_error(self = None, message = None):
+        logger.error('Error: %s', message)
+        self._on_status('error')
+        if self.cfg.get('ui', { }).get('show_overlay', True):
+            self._overlay.show(f'''出错: {message[:40]}''', mode = 'error')
+            return None
+
+    
+    def _shutdown(self = None):
+        logger.info('Shutting down')
+        self._stop_level_pump()
+        
+        try:
+            if self._listener:
+                self._listener.stop()
+            
+            try:
+                if self._worker:
+                    self._worker.stop_live_preview()
+                
+                try:
+                    if self._capture.is_recording:
+                        self._capture.cancel()
+                    
+                    try:
+                        if self._worker:
+                            self._worker.shutdown()
+                        
+                        try:
+                            self._overlay.stop()
+                            
+                            try:
+                                if self._tray:
+                                    self._tray.stop()
+                                if self._single_instance_handle:
+                                    
+                                    try:
+                                        import ctypes
+                                        kernel32 = ctypes.WinDLL('kernel32', use_last_error = True)
+                                        kernel32.CloseHandle.argtypes = [
+                                            ctypes.c_void_p]
+                                        kernel32.CloseHandle.restype = ctypes.c_bool
+                                        kernel32.CloseHandle(self._single_instance_handle)
+                                        self._single_instance_handle = None
+                                        return None
+                                        return None
+                                        except Exception:
+                                            logger.exception('listener stop')
+                                            continue
+                                        except Exception:
+                                            continue
+                                        except Exception:
+                                            continue
+                                        except Exception:
+                                            logger.exception('worker shutdown')
+                                            continue
+                                        except Exception:
+                                            continue
+                                        except Exception:
+                                            continue
+                                    except Exception:
+                                        logger.exception('single-instance handle close')
+                                        continue
+
+
+
+
+
+
+
+
+

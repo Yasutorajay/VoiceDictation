@@ -1,0 +1,3 @@
+GPL-3.0-only
+来源：https://github.com/jinzaizhichi/rime-ice
+版本：569ff3bc65dd4aec0a26b33c49c8bbdfa8b5fd57

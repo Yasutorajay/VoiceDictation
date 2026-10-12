@@ -1,0 +1,8 @@
+SenseVoice model source:
+https://github.com/FunAudioLLM/SenseVoice
+
+The upstream release refers to the FunASR project license:
+https://github.com/modelscope/FunASR?tab=readme-ov-file#license
+
+Apache License 2.0 text is bundled as `apache-2.0-LICENSE` in this directory.
+

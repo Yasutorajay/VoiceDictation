@@ -1,0 +1,14 @@
+VoiceDictation third-party package license inventory
+
+Package | Version | Declared license
+sherpa-onnx | 1.13.2 | Apache-2.0
+numpy | 2.4.6 | BSD-3-Clause
+scipy | 1.17.1 | BSD-3-Clause
+sounddevice | 0.5.5 | MIT
+pyperclip | 1.11.0 | BSD-3-Clause
+keyboard | 0.13.5 | MIT
+pystray | 0.19.5 | LGPL-3.0-or-later
+pillow | 12.2.0 | HPND/PIL
+pyyaml | 6.0.2 | MIT
+psutil | 7.2.2 | BSD/MIT
+pypinyin | 0.55.0 | MIT

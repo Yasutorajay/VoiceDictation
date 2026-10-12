@@ -1,0 +1,174 @@
+# Source Generated with Decompyle++
+# File: fsm.pyc (Python 3.12)
+
+from __future__ import annotations
+from dataclasses import dataclass
+from enum import Enum, auto
+from typing import Callable
+from app.hotkey.keys import is_pulse_token, normalize_key
+
+class HotkeyState(Enum):
+    IDLE = auto()
+    PRIMARY_HELD = auto()
+    RECORDING = auto()
+    COOLDOWN = auto()
+
+HotkeyConfig = <NODE:12>()
+
+class HotkeyFSM:
+    '''Primary-then-secondary chord FSM (keyboard or mouse tokens).
+
+    - Primary alone never starts recording.
+    - Recording starts only when secondary is pressed while primary is held.
+    - For hold-style secondaries: release primary OR secondary ends recording.
+    - For pulse secondaries (middle click / wheel tilt): secondary up is ignored;
+      release primary ends recording; another secondary press toggles stop.
+    '''
+    
+    def __init__(self = None, config = None, *, on_start, on_stop, on_cancel, now_ms):
+        self.config = config
+        if not on_start:
+            on_start
+        
+        self._on_start = lambda : pass
+        if not on_stop:
+            on_stop
+        
+        self._on_stop = lambda _ms: pass
+        if not on_cancel:
+            on_cancel
+        
+        self._on_cancel = lambda : pass
+        if not now_ms:
+            now_ms
+        self._now_ms = self._default_now_ms
+        self.state = HotkeyState.IDLE
+        self._primary_down = False
+        self._secondary_down = False
+        self._record_started_ms = 0
+        self._cooldown_until_ms = 0
+        self._busy = False
+        self._paused = False
+
+    
+    def update_config(self = None, config = None):
+        '''Hot-swap key bindings; abort current chord.'''
+        if self.state == HotkeyState.RECORDING:
+            self._abort_recording(cancel = True)
+        self.config = config
+        self.state = HotkeyState.IDLE
+        self._primary_down = False
+        self._secondary_down = False
+
+    _default_now_ms = (lambda : import timeint(time.monotonic() * 1000))()
+    is_recording = (lambda self = None: self.state == HotkeyState.RECORDING)()
+    
+    def set_busy(self = None, busy = None):
+        self._busy = busy
+
+    
+    def set_paused(self = None, paused = None):
+        self._paused = paused
+        if paused:
+            if self.state == HotkeyState.RECORDING:
+                self._abort_recording(cancel = True)
+                return None
+            return None
+
+    
+    def _secondary_is_pulse(self = None):
+        return is_pulse_token(self.config.secondary)
+
+    
+    def on_key(self = None, key = None, is_down = None):
+        '''Handle a key/mouse token event.
+
+        Returns True if the event should be suppressed when possible.
+        '''
+        if self.config.enabled or self._paused:
+            return False
+        key = normalize_key(key)
+        primary = normalize_key(self.config.primary)
+        secondary = normalize_key(self.config.secondary)
+        now = self._now_ms()
+        if self.state == HotkeyState.COOLDOWN:
+            if now >= self._cooldown_until_ms:
+                self.state = HotkeyState.IDLE
+            elif key == primary:
+                self._primary_down = is_down
+                return False
+            if key == secondary:
+                if not is_down:
+                    is_down
+                return self._secondary_is_pulse()
+            if None in ('esc', 'escape') and is_down:
+                if self.state == HotkeyState.RECORDING:
+                    self._abort_recording(cancel = True)
+                    return True
+                return False
+        if key == primary:
+            return self._handle_primary(is_down, now)
+        if None == secondary:
+            return self._handle_secondary(is_down, now)
+
+    
+    def _handle_primary(self = None, is_down = None, now = None):
+        self._primary_down = is_down
+        if is_down:
+            if self.state == HotkeyState.IDLE:
+                self.state = HotkeyState.PRIMARY_HELD
+            return False
+        if self.state == HotkeyState.RECORDING:
+            self._finish_recording(now)
+            return False
+        if self.state == HotkeyState.PRIMARY_HELD:
+            self.state = HotkeyState.IDLE
+            return False
+        return False
+
+    
+    def _handle_secondary(self = None, is_down = None, now = None):
+        pulse = self._secondary_is_pulse()
+        if is_down:
+            if self.state == HotkeyState.RECORDING and pulse:
+                self._finish_recording(now)
+                return True
+            if self.state == HotkeyState.PRIMARY_HELD and self._primary_down:
+                if self._busy:
+                    return True
+                self._secondary_down = True
+                self.state = HotkeyState.RECORDING
+                self._record_started_ms = now
+                self._on_start()
+                return True
+            return False
+        was_down = self._secondary_down
+        self._secondary_down = False
+        if pulse:
+            return was_down
+        if None.state == HotkeyState.RECORDING and was_down:
+            self._finish_recording(now)
+            return True
+        return False
+
+    
+    def _finish_recording(self = None, now = None):
+        held = max(0, now - self._record_started_ms)
+        self.state = HotkeyState.COOLDOWN
+        self._cooldown_until_ms = now + self.config.cooldown_ms
+        self._secondary_down = False
+        if held < self.config.min_hold_ms:
+            self._on_cancel()
+            return None
+        self._on_stop(held)
+
+    
+    def _abort_recording(self = None, *, cancel):
+        self.state = HotkeyState.COOLDOWN
+        self._cooldown_until_ms = self._now_ms() + self.config.cooldown_ms
+        self._secondary_down = False
+        if cancel:
+            self._on_cancel()
+            return None
+
+

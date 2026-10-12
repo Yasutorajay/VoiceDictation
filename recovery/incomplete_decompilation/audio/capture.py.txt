@@ -1,0 +1,125 @@
+# Source Generated with Decompyle++
+# File: capture.pyc (Python 3.12)
+
+from __future__ import annotations
+import logging
+import threading
+import time
+from typing import Any
+import numpy as np
+logger = logging.getLogger(__name__)
+
+class AudioCapture:
+    
+    def __init__(self = None, sample_rate = None, channels = None, device = (16000, 1, None)):
+        self.sample_rate = sample_rate
+        self.channels = channels
+        self.device = device
+        self._stream = None
+        self._lock = threading.Lock()
+        self._chunks = []
+        self._recording = False
+        self._started_at = 0
+        self._level = 0
+        self._bands = [
+            0.08] * 28
+
+    is_recording = (lambda self = None: self._recording)()
+    
+    def start(self = None):
+        pass
+    # WARNING: Decompyle incomplete
+
+    
+    def snapshot(self = None):
+        '''Copy of audio captured so far (safe for concurrent preview ASR).'''
+        self._lock
+        if not self._chunks:
+            None(None, None)
+            return 
+        None(None, None)
+        return 
+        with None:
+            if not None, None.concatenate(self._chunks).astype(np.float32):
+                pass
+
+    
+    def levels(self = None):
+        self._lock
+        None(None, None)
+        return 
+        with None:
+            if not None, list(self._bands):
+                pass
+
+    
+    def level(self = None):
+        self._lock
+        None(None, None)
+        return 
+        with None:
+            if not None, float(self._level):
+                pass
+
+    
+    def stop(self = None):
+        self._lock
+        self._recording = False
+        stream = self._stream
+        self._stream = None
+        chunks = list(self._chunks)
+        self._chunks = []
+        None(None, None)
+    # WARNING: Decompyle incomplete
+
+    
+    def cancel(self = None):
+        self.stop()
+
+
+
+def _waveform_bands(samples = None, n_bands = None):
+    if samples.size == 0:
+        return ([
+            0.08] * n_bands, 0)
+    rms = None(np.sqrt(np.mean(samples.astype(np.float64) ** 2) + 1e-12))
+    level = max(0, min(1, rms * 14))
+    chunk = max(1, samples.size // n_bands)
+    bands = []
+    for i in range(n_bands):
+        seg = samples[i * chunk:(i + 1) * chunk]
+        if seg.size == 0:
+            bands.append(0.08)
+            continue
+        s_rms = float(np.sqrt(np.mean(seg.astype(np.float64) ** 2) + 1e-12))
+        bands.append(max(0.05, min(1, s_rms * 16)))
+    return (bands, level)
+
+
+def trim_silence(audio = None, sample_rate = None, *, silence_rms, pad_ms, frame_ms):
+    if audio.size == 0:
+        return audio
+    frame = None(1, int(sample_rate * frame_ms / 1000))
+    n_frames = audio.size // frame
+    if n_frames == 0:
+        return audio
+    frames = None[:n_frames * frame].reshape(n_frames, frame)
+    rms = np.sqrt(np.mean(frames ** 2, axis = 1) + 1e-12)
+    active = rms > silence_rms
+    if not np.any(active):
+        return audio[:0]
+    first = None(np.argmax(active))
+    last = int(len(active) - 1 - np.argmax(active[::-1]))
+    pad = int(sample_rate * pad_ms / 1000)
+    start = max(0, first * frame - pad)
+    end = min(audio.size, (last + 1) * frame + pad)
+    return audio[start:end]
+
+
+def save_wav(path = None, audio = None, sample_rate = None):
+    wavfile = wavfile
+    import scipy.io
+    clipped = np.clip(audio, -1, 1)
+    pcm = (clipped * 32767).astype(np.int16)
+    wavfile.write(path, sample_rate, pcm)
+

@@ -1,0 +1,3 @@
+GPL-2.0-only
+来源：https://github.com/jargonsdev/jargons.dev
+版本：903f540552ffbc7d0ed75ae37fe725286dc5ebbc
