@@ -1,19 +1,21 @@
 # Source recovery status
 
-Original Python source for several core modules was lost in an earlier recovery
-incident. The project kept Python 3.12 bytecode as the runtime authority for:
+| Module | Status |
+|--------|--------|
+| `app/hotkey/fsm.py` | Present as `.py` (earlier recovery) |
+| `app/ui/overlay.py` | Rewritten clean GPL source (HUD API compatible) |
+| `app/application.py` | **Restored 2026-10-13** — reconstructed from Python 3.12 bytecode + call sites / tests |
+| `app/audio/capture.py` | **Restored 2026-10-13** — reconstructed from bytecode (`sounddevice` capture, levels, trim helpers) |
+| `app/hotkey/listener.py` | **Restored 2026-10-13** — reconstructed from bytecode (keyboard observe + WH_MOUSE_LL) |
 
-| Module | Status in this repo |
-|--------|---------------------|
-| `app/hotkey/fsm.py` | Recovered / present as `.py` |
-| `app/ui/overlay.py` | Rewritten clean source (see also `overlay_rewritten_reference.py`) |
-| `app/application.py` | **Missing** — only `recovery/bytecode/application.pyc` + incomplete decompile |
-| `app/audio/capture.py` | **Missing** — only bytecode + incomplete decompile |
-| `app/hotkey/listener.py` | **Missing** — only bytecode + incomplete decompile |
+## Notes
 
-Incomplete Decompyle++ outputs (Python 3.12, not syntax-complete) are under
-`recovery/incomplete_decompilation/` for reference only. Do not treat them as
-canonical source.
+- Canonical first-party license remains **GPL-3.0** (`LICENSE`).
+- Bytecode snapshots remain under `recovery/bytecode/` for forensic reference.
+- Incomplete Decompyle++ dumps remain under `recovery/incomplete_decompilation/` (not runtime source).
+- Restored modules favor faithful API/behavior matching the rest of the tree (`main.py`, FSM, overlay, `PipelineWorker`, tray, settings). Windows-only hooks are unchanged in intent; full end-to-end mic/ASR runtime should be verified on Windows with Release models.
 
-Help wanted: faithful re-implementation or successful decompilation of the three
-missing modules under GPL-3.0.
+## Verification done on restore
+
+- `py_compile` for the three modules
+- Unit/API smoke for `apply_hotkey`, settings wiring, listener suppress rules, capture snapshot/levels (Linux stubs for `tkinter` / `winreg` / `WinDLL`)
